@@ -9949,7 +9949,6 @@ var VRProfiles = function (_React$Component) {
             yRotation: yRotation,
             radius: radius,
             friend: friend,
-            toggleInEntity: _this2.props.toggleInEntity,
             currentStory: _this2.props.currentStory,
             onFriendClick: _this2.props.onFriendClick,
             currentStoriesDuration: _this2.props.currentStoriesDuration
@@ -10032,14 +10031,10 @@ var VRProfile = function VRProfile(props) {
       rotation: '0 90 90',
       material: 'src: ' + props.friend.profile.img_url
       // animation__rotate={{property: 'rotation', dur: 2000, loop: true, to: '360 360 360'}}
-
       // animation__yoyo={{property: 'position', dir: 'alternate', dur: 1000, easing: 'easeInSine', loop: true, to: '0 2 0'}}
       , onClick: function onClick() {
         return props.onFriendClick(props.friend);
-      },
-      events: { click: function click() {
-          return props.onFriendClick(props.friend);
-        }, mouseenter: props.toggleInEntity, mouseleave: props.toggleInEntity }
+      }
     }),
     _react2.default.createElement('a-text', {
       value: props.friend.profile.first,
@@ -10145,13 +10140,11 @@ var VRStories = function (_React$Component) {
       this.setId(this.state.friends);
       this.setId([this.state.user], true);
       this.setAutoPlayOrSplash();
-      // this.clickInSkyListener();
       this.createAssets();
     }
   }, {
     key: 'toggleInEntity',
     value: function toggleInEntity() {
-      console.log('toggle');
       this.setState({
         inEntity: !this.state.inEntity
       });
@@ -10433,7 +10426,6 @@ var VRStories = function (_React$Component) {
           friends: friends,
           currentStory: currentStory,
           onFriendClick: this.onFriendClick,
-          toggleInEntity: this.toggleInEntity,
           currentStoriesDuration: currentStoriesDuration
         }),
         _react2.default.createElement(_VRPrimitive2.default, { currentStory: currentStory }),
