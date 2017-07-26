@@ -10129,7 +10129,6 @@ var VRStories = function (_React$Component) {
     };
     _this.playNext = _this.playNext.bind(_this);
     _this.onFriendClick = _this.onFriendClick.bind(_this);
-    _this.toggleInEntity = _this.toggleInEntity.bind(_this);
     return _this;
   }
 
@@ -10141,13 +10140,6 @@ var VRStories = function (_React$Component) {
       this.setId([this.state.user], true);
       this.setAutoPlayOrSplash();
       this.createAssets();
-    }
-  }, {
-    key: 'toggleInEntity',
-    value: function toggleInEntity() {
-      this.setState({
-        inEntity: !this.state.inEntity
-      });
     }
   }, {
     key: 'removeFriendsWithNoStories',
@@ -10183,6 +10175,7 @@ var VRStories = function (_React$Component) {
     value: function countStoriesDuration() {
       var that = this;
       this.state.durationInTimeout = setInterval(function () {
+        // console.log('setting interval', this.state.currentStoriesDuration.current + .1)
         that.setState({
           currentStoriesDuration: {
             current: that.state.currentStoriesDuration.current + .1,
@@ -10197,26 +10190,38 @@ var VRStories = function (_React$Component) {
       var _this2 = this;
 
       var getDuration = function getDuration(n) {
+        console.log('here is n: ', n);
         var totalDuration = 0;
         for (var i = 0; i < n; i++) {
+          console.log('here is i: ', i);
           var storyObject = _this2.state.currentStories[i];
           var storyDom = document.getElementById(storyObject.id + ',' + storyObject.index);
-          if (!_this2.state.currentStory.type.slice(0, 5) === 'image') {
+          //for testing, use the below IF statement instead
+          // console.log('why bugging', this.state.currentStory.type.slice(0, 5), this.state.currentStory.type)
+          console.log('this is currentStory type...', _this2.state.currentStory.type);
+          console.log('checking storyDom duration..', storyDom.duration);
+          if (storyObject.type.slice(0, 5) === 'image') {
             totalDuration += _this2.state.defaultDuration / 1000;
           } else {
-            console.log('duration', storyDom.duration);
+            // console.log('its a video, and adding...', storyDom.duration)
             totalDuration += storyDom.duration;
           }
         }
         return totalDuration;
       };
 
+      var current = getDuration(this.state.currentStory.index);
+      var total = getDuration(this.state.currentStories.length);
+
+      // console.log('aaaaa', getDuration(this.state.currentStories.length), 'should be same as', getDuration(2))
+      // console.log('out of: ', getDuration(this.state.currentStory.index), ':', getDuration(this.state.currentStories.length))
       this.setState({
         currentStoriesDuration: {
-          current: getDuration(this.state.currentStory.index),
-          total: getDuration(this.state.currentStories.length)
+          current: current,
+          total: total
         }
       });
+
       this.countStoriesDuration();
     }
   }, {
@@ -10259,7 +10264,7 @@ var VRStories = function (_React$Component) {
       }
 
       var that = this;
-      var story = document.getElementById(this.state.currentStory.id + ',' + this.state.currentStory.index);
+      var storyDom = document.getElementById(this.state.currentStory.id + ',' + this.state.currentStory.index);
       var setStoryTimeout = function setStoryTimeout(duration) {
         _this3.state.storyInTimeout = setTimeout(function () {
           that.playNext();
@@ -10271,8 +10276,8 @@ var VRStories = function (_React$Component) {
       if (this.state.currentStory.type.slice(0, 5) === 'image') {
         setStoryTimeout(this.state.defaultDuration);
       } else {
-        story.play();
-        setStoryTimeout(story.duration * 1000);
+        storyDom.play();
+        setStoryTimeout(storyDom.duration * 1000);
       }
 
       this.setInitialStoriesDuration();
@@ -10342,17 +10347,6 @@ var VRStories = function (_React$Component) {
         this.setSplashScreen();
       }
     }
-  }, {
-    key: 'clickInSkyListener',
-    value: function clickInSkyListener() {
-      var _this6 = this;
-
-      document.body.addEventListener('click', function () {
-        if (!_this6.state.inEntity && _this6.state.currentStory.id !== -2) {
-          _this6.playNext();
-        }
-      });
-    }
 
     // THIS FUNCTION WILL UPDATE THE STATE OF THE MOST RECENTLY CLICKED FRIEND
     //
@@ -10362,7 +10356,7 @@ var VRStories = function (_React$Component) {
   }, {
     key: 'onFriendClick',
     value: function onFriendClick(friendData) {
-      var _this7 = this;
+      var _this6 = this;
 
       var _state3 = this.state,
           currentStory = _state3.currentStory,
@@ -10382,7 +10376,7 @@ var VRStories = function (_React$Component) {
           currentStories: friendData.stories,
           currentStory: friendData.stories[0]
         }, function () {
-          return _this7.invokePlay();
+          return _this6.invokePlay();
         });
       }
     }
