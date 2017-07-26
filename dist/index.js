@@ -9987,7 +9987,8 @@ var VRProfile = function VRProfile(props) {
   var animateScaleClick = void 0,
       animateScaleMove = void 0,
       progressBar = void 0,
-      progressBarTotal = void 0;
+      progressBarTotal = void 0,
+      progressBarStoryBeginning = void 0;
   if (props.currentStory.id === props.friend.profile.id) {
     animateScaleClick = { property: 'scale', dir: 'alternate', dur: 100, easing: 'easeInOutQuad', repeat: 1, to: '1.12 1.12 1.12' };
     // animateScaleMove = {property: 'position', dir: 'to', dur: 200, easing: 'easeInOutQuad', repeat: 1, to: `0 3 0`};
@@ -10007,6 +10008,15 @@ var VRProfile = function VRProfile(props) {
       height: progress,
       rotation: '0 0 90',
       color: '#89b6ff',
+      opacity: '0.8',
+      position: progressXPos + ' ' + progressYPos + ' 0'
+    });
+
+    progressBarStoryBeginning = _react2.default.createElement('a-cylinder', {
+      radius: progressRadius,
+      height: progress,
+      rotation: '0 0 90',
+      color: '#5b5b5b',
       opacity: '0.8',
       position: progressXPos + ' ' + progressYPos + ' 0'
     });
@@ -10044,7 +10054,7 @@ var VRProfile = function VRProfile(props) {
       position: '0 ' + -picRadius * 1.2 + ' 0'
 
     }),
-    progressBar,
+    progressBarStoryBeginning,
     progressBarTotal
   );
 };
@@ -10106,6 +10116,9 @@ var VRStories = function (_React$Component) {
       autoPlayNext: props.autoPlayNext || false,
       autoPlayStart: props.autoPlayStart || false,
       defaultDuration: props.defaultDuration || 7000,
+      assetsCallback: props.assetsCallback || function () {
+        return console.log('This module will not work without an assetsCallback. Please provide a callback to receive a list of generated assetes for all your media');
+      },
       splashScreen: {
         id: -2,
         index: -2,
@@ -10113,13 +10126,13 @@ var VRStories = function (_React$Component) {
         src: props.splashScreen
       },
 
-      inEntity: false,
       currentStory: {},
       currentStories: [],
       storyInTimeout: null,
       durationInTimeout: null,
       currentStoriesDuration: {
         current: 0,
+        storyBegining: 0,
         total: 0
       },
       lastClickedFriendIndex: null
@@ -10179,6 +10192,7 @@ var VRStories = function (_React$Component) {
         that.setState({
           currentStoriesDuration: {
             current: that.state.currentStoriesDuration.current + .1,
+            storyBegining: that.state.currentStoriesDuration.storyBegining,
             total: that.state.currentStoriesDuration.total
           }
         });
@@ -10207,6 +10221,7 @@ var VRStories = function (_React$Component) {
       this.setState({
         currentStoriesDuration: {
           current: getDuration(this.state.currentStory.index),
+          storyBegining: getDuration(this.state.currentStory.index),
           total: getDuration(this.state.currentStories.length)
         }
       });
@@ -10391,7 +10406,7 @@ var VRStories = function (_React$Component) {
       });
       assets.push(splashScreenAsset);
 
-      this.props.assetsCallback(assets);
+      this.state.assetsCallback(assets);
     }
   }, {
     key: 'render',
